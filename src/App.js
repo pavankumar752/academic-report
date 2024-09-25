@@ -10,6 +10,7 @@ import SrichaitanyaReportCards from './components/SrichaitanyaReportCards';
 import StudentList from './components/StudentList'
 import AddExam from './components/ExamInstance'
 import StudentsList from './components/StudentsList'
+import DualListBox from './components/DualListBox'
 import ExamList from './components/ExamList';
 
 class App extends React.Component {
@@ -38,6 +39,7 @@ class App extends React.Component {
               <Route path="/add-exam" element={isLoggedIn ? <AddExam /> : <Navigate to="/login" />} />
               <Route path="/students-list" element={isLoggedIn ? <StudentsList /> : <Navigate to="/login" />} />
               <Route path="/exams" element={isLoggedIn ? <ExamList /> : <Navigate to="/login" />} />
+              <Route path="/duallist-box" element={isLoggedIn ? <DualListBox /> : <Navigate to="/login" />} />
               <Route path="/exam-types" element={isLoggedIn ? <ExamTypes /> : <Navigate to="/login" />} />
               <Route path="/report-cards" element={isLoggedIn ? <SrichaitanyaReportCards /> : <Navigate to="/login" />} />
               <Route path="/student-list" element={isLoggedIn ? <StudentList /> : <Navigate to="/login" />} />

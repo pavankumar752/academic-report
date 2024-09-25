@@ -46,7 +46,7 @@ const Sidebar = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
+  const StudentIcon = ({ size = 24, color = '#000' }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={color}><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 3.58 8 8 8s8-3.58 8-8c0-5.52-4.48-10-10-10zm0 16c-4.41 0-8-3.59-8-8 0-1.65.5-3.18 1.36-4.44l5.27 5.27a3 3 0 0 0 4.24 0l5.27-5.27C19.5 6.82 20 8.35 20 10c0 4.41-3.59 8-8 8zm-1-11h2v4h-2zm0 6h2v2h-2z"/></svg>;
   return (
     <SidebarContainer>
       <Link to="/home"><Heading>Sri Chaitanya School</Heading></Link>
@@ -79,6 +79,12 @@ const Sidebar = () => {
           <Link to="/students-list">
             <IconWrapper color="#17a2b8"><FaPlus /></IconWrapper>
             Student List
+          </Link>
+        </NavItem>
+        <NavItem>
+          <Link to="/duallist-box">
+            <IconWrapper color="#17a2b8"><FaPlus /></IconWrapper>
+            Dual List Box
           </Link>
         </NavItem>
       </NavList>

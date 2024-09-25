@@ -57,24 +57,12 @@ const Sidebar = () => {
             Home
           </Link>
         </NavItem>
-        <NavItem onClick={toggleDropdown}>
+        <NavItem>
+          <Link to = "/exams">
           <IconWrapper color="#28a745"><FaClipboardList /></IconWrapper>
           Exams
+          </Link>
         </NavItem>
-        <DropdownContainer isOpen={isDropdownOpen}>
-          <NavItem>
-            <Link to="/exams">
-            <IconWrapper color="#28a745"><FaClipboardList /></IconWrapper>
-              Exams
-            </Link>
-          </NavItem>
-          <NavItem>
-            <Link to="/add-exam">
-              <IconWrapper color="#28a745"><FaPlus /></IconWrapper>
-              Add Exams
-            </Link>
-          </NavItem>
-        </DropdownContainer>
         <NavItem>
           <Link to="/exam-types">
             <IconWrapper color="#ffc107"><FaFileAlt /></IconWrapper>
@@ -88,7 +76,7 @@ const Sidebar = () => {
           </Link>
         </NavItem>
         <NavItem>
-          <Link to="/student-list">
+          <Link to="/students-list">
             <IconWrapper color="#17a2b8"><FaPlus /></IconWrapper>
             Student List
           </Link>

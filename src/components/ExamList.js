@@ -1,4 +1,3 @@
-
 import styled from 'styled-components';
 import Modal from 'react-modal';
 import React, { useState } from 'react';
@@ -15,7 +14,7 @@ const Sub = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px;
-`
+`;
 
 const Header = styled.div`
   width: 100%;
@@ -41,42 +40,6 @@ const AddButton = styled.button`
   }
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-`;
-
-const TableHeader = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-  background-color: #f2f2f2;
-`;
-
-const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-`;
-
-const TableCell = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  
-`;
-const Input = styled.input`
-  padding: 10px;
-  font-size: 1em;
-`;
-const SubmitButton = styled.button`
-  padding: 10px;
-  font-size: 1em;
-  cursor: pointer;
-`;
 const StudentCard = styled.div`
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -91,23 +54,76 @@ const Info = styled.p`
   margin: 5px 0;
 `;
 
+const ActionButton = styled.button`
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+  &:hover {
+    background-color: #218838;
+  }
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  font-size: 1em;
+`;
+
+const SubmitButton = styled.button`
+  padding: 10px;
+  font-size: 1em;
+  cursor: pointer;
+`;
+
 // Component
-const ExamList = ({}) => {
-    const initialStudents = [
-      ];
-      const [students, setStudents] = useState(initialStudents);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [newStudent, setNewStudent] = useState({
+const ExamList = () => {
+  const initialStudents = [];
+  const [students, setStudents] = useState(initialStudents);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [viewModalIsOpen, setViewModalIsOpen] = useState(false);
+  const [newStudent, setNewStudent] = useState({
+    examName: '',
+    date: '',
+    duration: '',
+    orientation: '',
+    studentClass: '',
+    section: '',
+    examType: ''
+  });
+  const [editingIndex, setEditingIndex] = useState(null);
+
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => {
+    setEditingIndex(null);
+    setNewStudent({
       examName: '',
       date: '',
-      duration:'',
-      orientation:'',
-      studentClass:'',
-      section:'',
-      examType:''
-  });
-  const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+      duration: '',
+      orientation: '',
+      studentClass: '',
+      section: '',
+      examType: ''
+    });
+    setModalIsOpen(false);
+  };
+
+  const openViewModal = (student) => {
+    setNewStudent(student);
+    setViewModalIsOpen(true);
+  };
+
+  const closeViewModal = () => {
+    setViewModalIsOpen(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,18 +132,22 @@ const ExamList = ({}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStudents((prev) => [...prev, newStudent]);
-    setNewStudent({
-      examName: '',
-    date: '',
-    duration:'',
-    orientation:'',
-    studentClass:'',
-    section:'',
-    examType:''
-    });
+    if (editingIndex !== null) {
+      const updatedStudents = [...students];
+      updatedStudents[editingIndex] = newStudent;
+      setStudents(updatedStudents);
+    } else {
+      setStudents((prev) => [...prev, newStudent]);
+    }
     closeModal();
   };
+
+  const editStudent = (student, index) => {
+    setNewStudent(student);
+    setEditingIndex(index);
+    openModal();
+  };
+
   return (
     <Container>
       <Header>
@@ -135,20 +155,26 @@ const ExamList = ({}) => {
         <AddButton onClick={openModal}>Add Exam</AddButton>
       </Header>
       <Sub>
-      {students.map((student, index) => (
-        <StudentCard key={index}>
-          <Info><strong>Exam Name:</strong> {student.examName}</Info>
-          <Info><strong>Date:</strong> {student.date}</Info>
-          <Info><strong>Duration:</strong> {student.duration}</Info>
-          <Info><strong>Orientation:</strong> {student.orientation}</Info>
-          <Info><strong>Student Class:</strong> {student.studentClass}</Info>
-          <Info><strong>Section:</strong> {student.section}</Info>
-          <Info><strong>Exam Type</strong>{student.examType}</Info>
-        </StudentCard>
-      ))}
+        {students.map((student, index) => (
+          <StudentCard key={index}>
+            <Info><strong>Exam Name:</strong> {student.examName}</Info>
+            <Info><strong>Date:</strong> {student.date}</Info>
+            <Info><strong>Duration:</strong> {student.duration}</Info>
+            <Info><strong>Orientation:</strong> {student.orientation}</Info>
+            <Info><strong>Student Class:</strong> {student.studentClass}</Info>
+            <Info><strong>Section:</strong> {student.section}</Info>
+            <Info><strong>Exam Type:</strong> {student.examType}</Info>
+            <div>
+              <ActionButton onClick={() => openViewModal(student)}>View</ActionButton>
+              <ActionButton onClick={() => editStudent(student, index)}>Edit</ActionButton>
+            </div>
+          </StudentCard>
+        ))}
       </Sub>
+
+      {/* Add/Edit Exam Modal */}
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Add Exam">
-        <h2>Add Exam</h2>
+        <h2>{editingIndex !== null ? 'Edit Exam' : 'Add Exam'}</h2>
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
@@ -159,12 +185,12 @@ const ExamList = ({}) => {
             required
           />
           <Input
-          type="date"
-          id="date"
-          name="date"
-          value={newStudent.date}
-          onChange={handleChange}
-        />
+            type="date"
+            name="date"
+            value={newStudent.date}
+            onChange={handleChange}
+            required
+          />
           <Input
             type="text"
             name="duration"
@@ -186,7 +212,7 @@ const ExamList = ({}) => {
             name="studentClass"
             value={newStudent.studentClass}
             onChange={handleChange}
-            placeholder="StudentClass"
+            placeholder="Student Class"
             required
           />
           <Input
@@ -205,8 +231,23 @@ const ExamList = ({}) => {
             placeholder="Exam Type"
             required
           />
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">{editingIndex !== null ? 'Update' : 'Add'}</SubmitButton>
         </Form>
+      </Modal>
+
+      {/* View Exam Modal */}
+      <Modal isOpen={viewModalIsOpen} onRequestClose={closeViewModal} contentLabel="View Exam">
+        <h2>Exam Details</h2>
+        <div>
+          <Info><strong>Exam Name:</strong> {newStudent.examName}</Info>
+          <Info><strong>Date:</strong> {newStudent.date}</Info>
+          <Info><strong>Duration:</strong> {newStudent.duration}</Info>
+          <Info><strong>Orientation:</strong> {newStudent.orientation}</Info>
+          <Info><strong>Student Class:</strong> {newStudent.studentClass}</Info>
+          <Info><strong>Section:</strong> {newStudent.section}</Info>
+          <Info><strong>Exam Type:</strong> {newStudent.examType}</Info>
+        </div>
+        <button onClick={closeViewModal}>Close</button>
       </Modal>
     </Container>
   );

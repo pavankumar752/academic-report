@@ -1,4 +1,3 @@
-
 import styled from 'styled-components';
 import Modal from 'react-modal';
 import React, { useState } from 'react';
@@ -56,15 +55,22 @@ const TableCell = styled.td`
   border: 1px solid #ddd;
   padding: 8px;
 `;
+
+const ActionCell = styled.td`
+  text-align: center;
+`;
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 10px;
 `;
+
 const Input = styled.input`
   padding: 10px;
   font-size: 1em;
 `;
+
 const SubmitButton = styled.button`
   padding: 10px;
   font-size: 1em;
@@ -72,21 +78,41 @@ const SubmitButton = styled.button`
 `;
 
 // Component
-const StudentList = ({}) => {
-    const initialStudents = [
-      ];
-      const [students, setStudents] = useState(initialStudents);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [newStudent, setNewStudent] = useState({
+const StudentList = () => {
+  const initialStudents = [];
+  const [students, setStudents] = useState(initialStudents);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [newStudent, setNewStudent] = useState({
+    scsNumber: '',
     name: '',
-    academicYear: '',
-    class: '',
     gender: '',
+    studentStatus: '',
+    state: '',
+    zone: '',
+    branch: '',
     orientation: '',
+    studentClass: '',
     section: '',
   });
+
   const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = () => {
+    setEditingIndex(null);
+    setNewStudent({
+      scsNumber: '',
+      name: '',
+      gender: '',
+      studentStatus: '',
+      state: '',
+      zone: '',
+      branch: '',
+      orientation: '',
+      studentClass: '',
+      section: '',
+    });
+    setModalIsOpen(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,17 +121,28 @@ const StudentList = ({}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStudents((prev) => [...prev, newStudent]);
-    setNewStudent({
-      name: '',
-      academicYear: '',
-      class: '',
-      gender: '',
-      orientation: '',
-      section: '',
-    });
+    if (editingIndex !== null) {
+      // Update existing student
+      const updatedStudents = [...students];
+      updatedStudents[editingIndex] = newStudent;
+      setStudents(updatedStudents);
+    } else {
+      // Add new student
+      setStudents((prev) => [...prev, newStudent]);
+    }
     closeModal();
   };
+
+  const viewStudent = (student) => {
+    alert(`Viewing: ${JSON.stringify(student, null, 2)}`);
+  };
+
+  const editStudent = (student, index) => {
+    setNewStudent(student);
+    setEditingIndex(index);
+    openModal();
+  };
+
   return (
     <Container>
       <Header>
@@ -115,16 +152,17 @@ const StudentList = ({}) => {
       <Table>
         <thead>
           <tr>
-            <TableHeader>scs number</TableHeader>
-            <TableHeader>name</TableHeader>
-            <TableHeader>gender</TableHeader>
-            <TableHeader>student status</TableHeader>
-            <TableHeader>state</TableHeader>
-            <TableHeader>zone</TableHeader>
-            <TableHeader>branch</TableHeader>
-            <TableHeader>orientation</TableHeader>
-            <TableHeader>student class</TableHeader>
-            <TableHeader>section</TableHeader>
+            <TableHeader>SCS Number</TableHeader>
+            <TableHeader>Name</TableHeader>
+            <TableHeader>Gender</TableHeader>
+            <TableHeader>Student Status</TableHeader>
+            <TableHeader>State</TableHeader>
+            <TableHeader>Zone</TableHeader>
+            <TableHeader>Branch</TableHeader>
+            <TableHeader>Orientation</TableHeader>
+            <TableHeader>Student Class</TableHeader>
+            <TableHeader>Section</TableHeader>
+            <TableHeader>Actions</TableHeader>
           </tr>
         </thead>
         <tbody>
@@ -140,19 +178,25 @@ const StudentList = ({}) => {
               <TableCell>{student.orientation}</TableCell>
               <TableCell>{student.studentClass}</TableCell>
               <TableCell>{student.section}</TableCell>
+              <TableCell>
+              <ActionCell>
+                <button onClick={() => viewStudent(student)}>🔍</button>
+                <button onClick={() => editStudent(student, index)}>✏️</button>
+              </ActionCell>
+              </TableCell>
             </TableRow>
           ))}
         </tbody>
       </Table>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Add Student">
-        <h2>Add Student</h2>
+        <h2>{editingIndex !== null ? 'Edit Student' : 'Add Student'}</h2>
         <Form onSubmit={handleSubmit}>
           <Input
             type="text"
             name="scsNumber"
             value={newStudent.scsNumber}
             onChange={handleChange}
-            placeholder="scsNumber"
+            placeholder="SCS Number"
             required
           />
           <Input
@@ -176,7 +220,7 @@ const StudentList = ({}) => {
             name="studentStatus"
             value={newStudent.studentStatus}
             onChange={handleChange}
-            placeholder="StudentStatus"
+            placeholder="Student Status"
             required
           />
           <Input
@@ -200,7 +244,7 @@ const StudentList = ({}) => {
             name="branch"
             value={newStudent.branch}
             onChange={handleChange}
-            placeholder="branch"
+            placeholder="Branch"
             required
           />
           <Input
@@ -216,7 +260,7 @@ const StudentList = ({}) => {
             name="studentClass"
             value={newStudent.studentClass}
             onChange={handleChange}
-            placeholder="StudentClass"
+            placeholder="Student Class"
             required
           />
           <Input
@@ -227,7 +271,7 @@ const StudentList = ({}) => {
             placeholder="Section"
             required
           />
-          <SubmitButton type="submit">Add</SubmitButton>
+          <SubmitButton type="submit">{editingIndex !== null ? 'Update' : 'Add'}</SubmitButton>
         </Form>
       </Modal>
     </Container>

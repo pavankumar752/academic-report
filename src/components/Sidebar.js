@@ -40,53 +40,81 @@ const DropdownContainer = styled.div`
   padding-left: 20px;
 `;
 
-const Sidebar = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const sidebarItems = [
+  {
+    path: "/home",
+    label: "Home",
+    icon: <FaHome color="#007bff" />,
+  },
+  {
+    path: "/home",
+    label: "Exams",
+    icon: <FaClipboardList color="#28a745" />,
+    subItems: [
+      { path: "/exams/first-term", label: "First Term" },
+      { path: "/exams/second-term", label: "Second Term" },
+    ],
+  },
+  {
+    path: "/exam-types",
+    label: "Exam Types",
+    icon: <FaFileAlt color="#ffc107" />,
+  },
+  {
+    path: "/report-cards",
+    label: "Report Cards",
+    icon: <FaFileAlt color="#dc3545" />,
+  },
+  {
+    path: "/students-list",
+    label: "Student List",
+    icon: <FaPlus color="#17a2b8" />,
+  },
+  {
+    path: "/duallist-box",
+    label: "Dual List Box",
+    icon: <FaPlus color="#17a2b8" />,
+  },
+  {
+    path: "/marks-entry",
+    label: "Marks Entry",
+    icon: <FaPlus color="#17a2b8" />,
+  },
+];
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+const Sidebar = () => {
+  const [openSubItem, setOpenSubItem] = useState(null);
+
+  const toggleSubItems = (index) => {
+    setOpenSubItem(openSubItem === index ? null : index);
   };
-  const StudentIcon = ({ size = 24, color = '#000' }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={color}><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 3.58 8 8 8s8-3.58 8-8c0-5.52-4.48-10-10-10zm0 16c-4.41 0-8-3.59-8-8 0-1.65.5-3.18 1.36-4.44l5.27 5.27a3 3 0 0 0 4.24 0l5.27-5.27C19.5 6.82 20 8.35 20 10c0 4.41-3.59 8-8 8zm-1-11h2v4h-2zm0 6h2v2h-2z"/></svg>;
+
   return (
     <SidebarContainer>
       <Link to="/home"><Heading>Sri Chaitanya School</Heading></Link>
       <NavList>
-        <NavItem>
-          <Link to="/home">
-            <IconWrapper color="#007bff"><FaHome /></IconWrapper>
-            Home
-          </Link>
-        </NavItem>
-        <NavItem>
-          <Link to = "/exams">
-          <IconWrapper color="#28a745"><FaClipboardList /></IconWrapper>
-          Exams
-          </Link>
-        </NavItem>
-        <NavItem>
-          <Link to="/exam-types">
-            <IconWrapper color="#ffc107"><FaFileAlt /></IconWrapper>
-            Exam Types
-          </Link>
-        </NavItem>
-        <NavItem>
-          <Link to="/report-cards">
-            <IconWrapper color="#dc3545"><FaFileAlt /></IconWrapper>
-            Report Cards
-          </Link>
-        </NavItem>
-        <NavItem>
-          <Link to="/students-list">
-            <IconWrapper color="#17a2b8"><FaPlus /></IconWrapper>
-            Student List
-          </Link>
-        </NavItem>
-        <NavItem>
-          <Link to="/duallist-box">
-            <IconWrapper color="#17a2b8"><FaPlus /></IconWrapper>
-            Dual List Box
-          </Link>
-        </NavItem>
+        {sidebarItems.map((item, index) => (
+          <div key={index}>
+            <NavItem onClick={() => toggleSubItems(index)}>
+              <Link to={item.path}>
+                <IconWrapper>{item.icon}</IconWrapper>
+                {item.label}
+              </Link>
+            </NavItem>
+            {item.subItems && openSubItem === index && (
+              <DropdownContainer isOpen={openSubItem === index}>
+                {item.subItems.map((subItem, subIndex) => (
+                  <NavItem key={subIndex}>
+                    <Link to={subItem.path}>
+                      <IconWrapper color="#6c757d">-</IconWrapper>
+                      {subItem.label}
+                    </Link>
+                  </NavItem>
+                ))}
+              </DropdownContainer>
+            )}
+          </div>
+        ))}
       </NavList>
     </SidebarContainer>
   );

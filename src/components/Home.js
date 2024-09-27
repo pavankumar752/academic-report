@@ -49,12 +49,12 @@ class Home extends React.Component {
           <p>List of report cards</p>
         </Card>
         </Link>
-        <Link to="/student-list">
+        {/*<Link to="/student-list">
         <Card bgColor="#e2e3e5">
           <CardTitle>Student List</CardTitle>
           <p>List of students</p>
         </Card>
-        </Link>
+        </Link>*/}
         <Link to="/students-list">
         <Card bgColor="#e2e3e5">
           <CardTitle>Students List</CardTitle>
